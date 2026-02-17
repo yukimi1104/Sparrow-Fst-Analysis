@@ -3,7 +3,6 @@
 This project investigates the genomic landscape of differentiation among three sparrow populations (8N, K, and Lesina). Following the biological framework of Natola & Irwin (2025), the pipeline processes raw VCF files, calculates relative differentiation (FST) and nucleotide diversity (pi), and generates Manhattan plots and statistical summaries to identify genomic islands of divergence. 
 ## Repository Structure
 - `data/` : Directory for raw VCF files (ignored in version control).
-- `metadata/` : Output directory for population sample lists.
 - `results/` : Output directory for filtered VCFs, Fst/Pi calculations, tables, and plots.
 - `scripts/01_prep_metadata.sh` : Bash script to extract and group sample IDs from the VCF.
 - `scripts/03_analysis_visualization.R` : R script for merging data, statistical analysis, and plotting.
