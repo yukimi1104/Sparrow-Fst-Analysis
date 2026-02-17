@@ -1,34 +1,36 @@
 # Genomic Differentiation Analysis of Sparrow Populations
-## 1. Abstract
-This project investigates the genomic landscape of differentiation among three populations (8N, K, and Lesina). Following the methodology of Natola & Irwin (2025), we analyzed relative differentiation (Fst) and absolute distance (dxy, also known as pi_B) to explore biological drivers, which caused organisms to split into different species.
-## 2. Method
-Our workflow is conducted as the following pipeline.
-### Tools and Parameters
-- **VCFtools:**  calculate Weir and Cockerham’s Fst estimates.
-- **Filtering Criteria:** 
-  - **Biallelic SNPs only:** To ensure compatibility with standard population genetic models.
-  - **MAF> 0.05:** To remove rare variants that may represent sequencing errors.
-  - **Max-missing 0.8:** To ensure high data quality by requiring an 80% genotype call rate.
-- **Window Size:** 50 kb non-overlapping windows were used to identify regional genomic islands of differentiation.
-## 3. Scripts
-- All scripts are modular and annotated to ensure reproducibility.
- -**scripts/01_prep_metadata.sh**: A Bash script to automatically extract and group sample IDs from the VCF into population lists.-**Snakefile**: Contain variant filtering and the calculation of windowed statistics 
- -**03_analysis_visualization.R**: An R script that generates Manhattan plots, Spearman correlations, and quantitative summary tables.
-## 4. Results
-Quantitative analysis of the 2,596 genomic windows revealed significant variation in differentiation across groups:
-8N vs Lesina (Highest Divergence): Showed a mean FST of 0.401 with 961 highly divergent windows (FST > 0.5$).
-Lesina vs K (Moderate Divergence): Showed a mean FST of 0.255.
-8N vs K (Baseline): Represented the most similar pair with a mean FST of 0.104.
-Large Z Effect: FST values on the Z chromosome (Mean 0.569) were significantly higher than the genomic background of Autosomes (Mean 0.078 - 0.213$), which is clearly visualized in the Manhattan plot.
-Speciation Model: The positive Spearman correlation and elevated sex-chromosome differentiation support a model of divergence with gene flow.
-## 5. Reference
-- **Natola, L., & Irwin, D. E. (2025).** *Genomic landscape of differentiation in a three-way sapsucker hybrid zone.* Journal of Evolutionary Biology.
-## 6. Reproducibility & Disclosure
-- **Execution:** This pipeline can be reproduced by running the provided scripts in order (`01` to `03`) or by using the `Snakefile` (if applicable).
-- **AI Disclosure:** The bioinformatic term and README formatting were adjusted with assistance from Gemini (Generative AI), following the biological framework of Natola & Irwin (2025).
-## 7. Installation & Environment
-The tools were installed as below:
-- **VCFtools & BCFtools:** For genomic data filtering and summary statistics.
-- **R (v4.5.2):** With libraries `ggplot2`, `dplyr`, `readr`,`patchwork`.
-- **Snakemake:** For workflow orchestration.
-
+## Description
+This project investigates the genomic landscape of differentiation among three sparrow populations (8N, K, and Lesina). Following the biological framework of Natola & Irwin (2025), the pipeline processes raw VCF files, calculates relative differentiation (FST) and nucleotide diversity (pi), and generates Manhattan plots and statistical summaries to identify genomic islands of divergence. 
+## Repository Structure
+- `data/` : Directory for raw VCF files (ignored in version control).
+- `metadata/` : Output directory for population sample lists.
+- `results/` : Output directory for filtered VCFs, Fst/Pi calculations, tables, and plots.
+- `scripts/01_prep_metadata.sh` : Bash script to extract and group sample IDs from the VCF.
+- `scripts/03_analysis_visualization.R` : R script for merging data, statistical analysis, and plotting.
+- `Snakefile` : Snakemake workflow for automated variant filtering and windowed statistics.
+- `environment.yaml` : Conda environment configuration file.
+## Installation & Environment Setup
+To ensure full reproducibility, a Conda environment file is provided. It contains all the necessary dependencies (`snakemake`, `vcftools`, `bcftools`, `r-base`, and R packages like `ggplot2`, `dplyr`, `patchwork`).
+1. Clone this repository:
+   ```bash
+   git clone [https://github.com/yukimi1104/Sparrow-Fst-Analysis.git](https://github.com/yukimi1104/Sparrow-Fst-Analysis.git)
+   cd Sparrow-Fst-Analysis
+Create and activate the Conda environment:
+Bashconda env create -f environment.yaml
+conda activate sparrow_fst
+Usage: From Raw VCF to Visualization
+Follow these sequential steps to reproduce the entire analysis from raw sequence data to the final figures.
+Step 1: Data Preparation
+Place your raw VCF files into the data/ directory. The pipeline specifically expects the following filenames based on the Snakefile:data/autosomes_sparrows.vcfdata/chrZ_sparrows.vcfStep 
+2: Generate Population Metadata
+Run the bash script to extract sample IDs from the Z chromosome VCF and categorize them into population-specific lists (8N, K, Lesina) under the metadata/ folder.Bashbash scripts/01_prep_metadata.sh
+Step 3: Execute the Snakemake Pipeline
+Run Snakemake to perform variant filtering (Biallelic SNPs, MAF > 0.05, Max-missing 0.8) and calculate 50kb windowed FST and pi statistics using VCFtools.Bashsnakemake --cores 4
+Step 4: Statistical Analysis and Visualization
+Once Snakemake finishes computing the statistics in the results/ folder, run the R script to generate the summary table and figures.BashRscript scripts/03_analysis_visualization.R
+This will output Fst_Detailed_Summary.csv, Figure_4_Manhattan.pdf, and Figure_5_Correlation.pdf in the results/ directory.
+GUI and Visual Editor Disclosure GUI Usage: No Graphical User Interfaces (GUIs) or point-and-click applications were used for data filtering or analysis. All steps were executed via the command line.
+Visual Editors: All figures and visualizations (including the multi-panel Manhattan plot and correlation scatter plot) were generated entirely programmatically using ggplot2 and patchwork in R. No external visual editors (e.g., Adobe Illustrator, Inkscape) were used to modify the final output.Authors and Acknowledgment
+Author: Yiran Chen
+Reference: Natola, L., & Irwin, D. E. (2025). Genomic landscape of differentiation in a three-way sapsucker hybrid zone. Journal of Evolutionary Biology.
+AI Disclosure: AI assistance (Gemini) was used for terminological refinement, README standard formatting, and LaTeX report adjustments.
